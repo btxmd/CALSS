@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+        }
+        input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: darkblue;
+        }
+        .output {
+            margin-top: 20px;
+        }
+        .link {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Formulario de Registro</h2>
+<form id="registrationForm">
+    <input type="text" id="firstName" placeholder="Primer nombre" required>
+    <input type="text" id="secondName" placeholder="Segundo nombre" required>
+    <input type="text" id="firstLastName" placeholder="Primer apellido" required>
+    <input type="text" id="secondLastName" placeholder="Segundo apellido" required>
+    <input type="date" id="birthDate" required>
+    <input type="email" id="email" placeholder="Correo electrónico" required readonly>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <input type="submit" value="Registrar">
+</form>
+
+<div class="output" id="output"></div>
+
+<div class="link">
+    <p>¿Ya tienes una cuenta? <a href="inicio.html">Inicia sesión aquí</a>.</p>
+</div>
+
+<script>
+    function generateEmail() {
+        const firstName = document.getElementById('firstName').value;
+        const secondName = document.getElementById('secondName').value;
+        const firstLastName = document.getElementById('firstLastName').value;
+        const secondLastName = document.getElementById('secondLastName').value;
+        const birthDate = document.getElementById('birthDate').value;
+
+        if (firstName && secondName && firstLastName && secondLastName && birthDate) {
+            const firstTwo = firstName.substring(0, 2);
+            const lastTwoSecondName = secondName.substring(Math.max(0, secondName.length - 2));
+            const lastTwoFirstLastName = firstLastName.substring(Math.max(0, firstLastName.length - 2));
+            const firstSecondLastName = secondLastName.substring(0, 1);
+            const year = new Date(birthDate).getFullYear().toString().slice(-2); // Últimos 2 dígitos del año
+
+            const email = `${firstTwo}${lastTwoFirstLastName}${lastTwoSecondName}${firstSecondLastName}${year}@gmail.com`.toLowerCase();
+            document.getElementById('email').value = email;
+        }
+    }
+
+    // Agregar event listeners para los campos de nombre y fecha
+    document.getElementById('firstName').addEventListener('input', generateEmail);
+    document.getElementById('secondName').addEventListener('input', generateEmail);
+    document.getElementById('firstLastName').addEventListener('input', generateEmail);
+    document.getElementById('secondLastName').addEventListener('input', generateEmail);
+    document.getElementById('birthDate').addEventListener('change', generateEmail);
+
+    document.getElementById('registrationForm').onsubmit = function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Validar contraseña
+        const passwordValid = /[A-Z]/.test(password) && /[a-z]/.test(password) && password.length > 8;
+
+        if (!passwordValid) {
+            alert('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula y una minúscula.');
+            return;
+        }
+
+        // Guardar usuario en localStorage
+        localStorage.setItem('username', email);
+        localStorage.setItem('password', password);
+
+        // Redirigir a la página de inicio de sesión
+        window.location.href = 'inicio.html';
+    }
+</script>
+
+</body>
+</html>
